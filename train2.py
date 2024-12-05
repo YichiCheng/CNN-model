@@ -14,7 +14,7 @@ IMAGE_DIR = "logging/image_data/"
 LOG_FILE = "logging/logging_data/log_file_0.txt"  # Adjust the file index as needed
 IMG_HEIGHT, IMG_WIDTH = 66, 200  # Resize dimensions
 BATCH_SIZE = 32
-EPOCHS = 20
+EPOCHS = 50
 AUGMENTATION_PROB = 0.5  # Probability of applying augmentations
 
 # Load and preprocess data
