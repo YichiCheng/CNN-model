@@ -111,7 +111,7 @@ def create_model():
         Dense(10, activation='relu'),
         Dense(1)  # Single output for steering angle
     ])
-    model.compile(optimizer=Adam(lr=0.0001), loss='mse', metrics=['mae'])
+    model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae'])
     return model
 
 # Main function
