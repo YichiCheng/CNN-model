@@ -11,7 +11,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 # Constants
 IMAGE_DIR = "D:/logging_camera_down/image_data/"
-LOG_FILE = "D:/logging_camera_down/logging_data/log_file_4.txt"  # Adjust the file index as needed
+LOG_FILE = "C:/logging_data/log_file_4.txt"  # Adjust the file index as needed
 IMG_HEIGHT, IMG_WIDTH = 66, 200  # Resize dimensions
 BATCH_SIZE = 32
 EPOCHS = 50
