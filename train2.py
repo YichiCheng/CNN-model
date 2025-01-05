@@ -29,6 +29,8 @@ def load_data():
             if len(parts) < 5:
                 continue
             timestamp, left_frame, right_frame, front_frame, steering_angle = parts
+            #houzhui
+            front_frame_with_ext = f"{front_frame}.jpg"
             data.append((front_frame, float(steering_angle)))
     
     df = pd.DataFrame(data, columns=["front_frame", "steering_angle"])
