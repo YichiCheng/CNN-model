@@ -26,8 +26,7 @@ def load_data():
     with open(LOG_FILE, 'r') as file:
         for line in file:
             parts = line.strip().split()
-            if len(parts) < 5:
-                continue
+            
             timestamp, left_frame, right_frame, front_frame, steering_angle = parts
             #houzhui
             front_frame = f"{front_frame}.jpg"
