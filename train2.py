@@ -79,26 +79,38 @@ def data_generator(df, batch_size):
 # Define CNN model
 def create_model():
     """
-    Define and compile a CNN model.
+    Define and compile a CNN model for multi-camera input.
     """
-    model = Sequential([
-        # Convolutional layers
-        Conv2D(24, (5, 5), strides=(2, 2), activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
-        Conv2D(36, (5, 5), strides=(2, 2), activation='relu'),
-        Conv2D(48, (5, 5), strides=(2, 2), activation='relu'),
-        Conv2D(64, (3, 3), activation='relu'),
-        Conv2D(64, (3, 3), activation='relu'),
-        
-        # Flatten and fully connected layers
-        Flatten(),
-        Dense(100, activation='relu'),
-        Dropout(0.5),  # Dropout for regularization
-        Dense(50, activation='relu'),
-        Dense(10, activation='relu'),
-        Dense(1)  # Single output for steering angle
-    ])
+    input_shape = (IMG_HEIGHT, IMG_WIDTH, 3)
+    front_input = tf.keras.Input(shape=input_shape, name="front_input")
+    left_input = tf.keras.Input(shape=input_shape, name="left_input")
+    right_input = tf.keras.Input(shape=input_shape, name="right_input")
+    
+    def cnn_branch(input_layer):
+        x = Conv2D(24, (5, 5), strides=(2, 2), activation='relu')(input_layer)
+        x = Conv2D(36, (5, 5), strides=(2, 2), activation='relu')(x)
+        x = Conv2D(48, (5, 5), strides=(2, 2), activation='relu')(x)
+        x = Conv2D(64, (3, 3), activation='relu')(x)
+        x = Conv2D(64, (3, 3), activation='relu')(x)
+        x = Flatten()(x)
+        return x
+
+    front_branch = cnn_branch(front_input)
+    left_branch = cnn_branch(left_input)
+    right_branch = cnn_branch(right_input)
+    
+    # Concatenate features
+    concatenated = tf.keras.layers.Concatenate()([front_branch, left_branch, right_branch])
+    x = Dense(100, activation='relu')(concatenated)
+    x = Dropout(0.5)(x)
+    x = Dense(50, activation='relu')(x)
+    x = Dense(10, activation='relu')(x)
+    output = Dense(1, name="steering_output")(x)
+    
+    model = tf.keras.Model(inputs=[front_input, left_input, right_input], outputs=output)
     model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae'])
     return model
+
 
 # Main function
 def main():
@@ -107,8 +119,8 @@ def main():
     train_df, val_df = train_test_split(df, test_size=0.2, random_state=42)
     
     # Create data generators with augmentation for training and no augmentation for validation
-    train_gen = data_generator(train_df, BATCH_SIZE, augment=True)
-    val_gen = data_generator(val_df, BATCH_SIZE, augment=False)
+    train_gen = data_generator(train_df, BATCH_SIZE)
+    val_gen = data_generator(val_df, BATCH_SIZE)
     
     # Build the model
     model = create_model()
