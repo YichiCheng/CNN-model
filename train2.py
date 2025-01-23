@@ -26,13 +26,14 @@ def load_data():
     with open(LOG_FILE, 'r') as file:
         for line in file:
             parts = line.strip().split()
-            
             timestamp, left_frame, right_frame, front_frame, steering_angle = parts
             #houzhui
             front_frame = f"{front_frame}.jpg"
-            data.append((front_frame, float(steering_angle)))
+            left_frame= f"{left_frame}.jpg"
+            right_frame= f"{right_frame}.jpg"
+            data.append((front_frame, left_frame, right_frame, float(steering_angle)))
     
-    df = pd.DataFrame(data, columns=["front_frame", "steering_angle"])
+    df = pd.DataFrame(data, columns=["front_frame", "left_frame", "right_frame", "steering_angle"])
     return df
 
 def preprocess_image(image_path):
@@ -44,54 +45,38 @@ def preprocess_image(image_path):
     img = cv2.resize(img, (IMG_WIDTH, IMG_HEIGHT))  # Resize to match input dimensions
     img = img / 255.0  # Normalize to [0, 1]
     return img
-
-# Augmentation functions
-def augment_image(image):
+ 
+def data_generator(df, batch_size):
     """
-    Apply random augmentations to the image.
-    """
-    if np.random.rand() < AUGMENTATION_PROB:
-        # Flip horizontally
-        image = tf.image.flip_left_right(image)
-    if np.random.rand() < AUGMENTATION_PROB:
-        # Adjust brightness
-        image = tf.image.adjust_brightness(image, delta=np.random.uniform(-0.2, 0.2))
-    if np.random.rand() < AUGMENTATION_PROB:
-        # Adjust saturation
-        image = tf.image.adjust_saturation(image, saturation_factor=np.random.uniform(0.8, 1.2))
-    return image
-
-def preprocess_and_augment(image_path):
-    """
-    Preprocess and augment the image.
-    """
-    img = preprocess_image(image_path)
-    img = augment_image(img)
-    return img
-
-# Data generator with augmentation
-def data_generator(df, batch_size, augment=False):
-    """
-    Generate batches of data for training.
+    Generate batches of data for training, including all three cameras.
     """
     num_samples = len(df)
     while True:
         df = df.sample(frac=1).reset_index(drop=True)  # Shuffle data
         for offset in range(0, num_samples, batch_size):
             batch_samples = df[offset:offset + batch_size]
-            images = []
+            front_images = []
+            left_images = []
+            right_images = []
             angles = []
+            
             for _, row in batch_samples.iterrows():
-                if augment:
-                    image = preprocess_and_augment(row["front_frame"])
-                else:
-                    image = preprocess_image(row["front_frame"])
+                
+                front_image = preprocess_image(row["front_frame"])
+                left_image = preprocess_image(row["left_frame"])
+                right_image = preprocess_image(row["right_frame"])
+                
                 steering_angle = row["steering_angle"]
-                images.append(image)
+                
+                # Append
+                front_images.append(front_image)
+                left_images.append(left_image)
+                right_images.append(right_image)
                 angles.append(steering_angle)
-            yield np.array(images), np.array(angles)
+            
+            yield [np.array(front_images), np.array(left_images), np.array(right_images)], np.array(angles) 
 
-# Define the CNN model
+# Define CNN model
 def create_model():
     """
     Define and compile a CNN model.
