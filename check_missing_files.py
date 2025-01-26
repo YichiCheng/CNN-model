@@ -1,6 +1,6 @@
 import os
 
-IMAGE_DIR = "D:/logging_camera_down/image_data/"
+IMAGE_DIR = "C:/image_data/"
 LOG_FILE = "C:/logging_data/log_file_4.txt"
 
 missing_files = []
