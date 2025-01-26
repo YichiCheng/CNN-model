@@ -37,10 +37,11 @@ def load_data():
     return df
 
 def preprocess_image(image_path):
-    """
-    Load and preprocess an image.
-    """
-    img = cv2.imread(os.path.join(IMAGE_DIR, image_path))
+    full_path = os.path.join(IMAGE_DIR, image_path)
+    print(f"Reading image from: {full_path}")  # 调试信息
+    img = cv2.imread(full_path)
+    if img is None:
+        print(f"Image not found or unreadable: {full_path}")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (IMG_WIDTH, IMG_HEIGHT))  # Resize to match input dimensions
     img = img / 255.0  # Normalize to [0, 1]
