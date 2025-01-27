@@ -8,6 +8,7 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropou
 from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.callbacks import TensorBoard
 
 # Constants
 IMAGE_DIR = "C:/image_data/image_data/"
@@ -142,6 +143,7 @@ def main():
     # Define callbacks
     early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6, verbose=1, min_delta=0.001)
+    tensorboard_callback = TensorBoard(log_dir=f""C:/yichi/AVLtensorboardlog/log1/", histogram_freq=1)
 
     # Train the model
     history = model.fit(
@@ -151,7 +153,7 @@ def main():
         validation_steps=len(val_df) // BATCH_SIZE,
         epochs=EPOCHS,
         verbose=1,
-        callbacks=[early_stopping, reduce_lr]
+        callbacks=[tensorboard_callback, early_stopping, reduce_lr]
     )
     
     # Save the model
