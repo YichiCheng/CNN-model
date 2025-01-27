@@ -38,7 +38,7 @@ def load_data():
 
 def preprocess_image(image_path):
     full_path = os.path.join(IMAGE_DIR, image_path)
-    print(f"Reading image from: {full_path}")  # 调试信息
+    #print(f"Reading image from: {full_path}")  
     img = cv2.imread(full_path)
     if img is None:
         print(f"Image not found or unreadable: {full_path}")
