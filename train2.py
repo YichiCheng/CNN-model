@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 # Constants
-IMAGE_DIR = "C:/image_data/"
+IMAGE_DIR = "C:/image_data/image_data/"
 LOG_FILE = "C:/logging_data/log_file_4.txt"  # Adjust the file index as needed
 IMG_HEIGHT, IMG_WIDTH = 66, 200  # Resize dimensions
 BATCH_SIZE = 32
