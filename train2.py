@@ -17,7 +17,10 @@ BATCH_SIZE = 32
 EPOCHS = 50
 AUGMENTATION_PROB = 0.5  # Probability of applying augmentations
 
-# Load and preprocess data
+def denormalize_angle(normalized_angle):
+    """Denormalize angle from [0, 1] to original range."""
+    return normalized_angle * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE
+
 def load_data():
     """
     Load the image file paths and corresponding steering angles from the log file.
@@ -27,13 +30,21 @@ def load_data():
         for line in file:
             parts = line.strip().split()
             timestamp, left_frame, right_frame, front_frame, steering_angle = parts
-            #houzhui
+            
             front_frame = f"{front_frame}.jpg"
             left_frame= f"{left_frame}.jpg"
             right_frame= f"{right_frame}.jpg"
             data.append((front_frame, left_frame, right_frame, float(steering_angle)))
     
     df = pd.DataFrame(data, columns=["front_frame", "left_frame", "right_frame", "steering_angle"])
+    
+    global MIN_ANGLE, MAX_ANGLE  # steering angle normalization
+    MIN_ANGLE = df["steering_angle"].min()
+    MAX_ANGLE = df["steering_angle"].max()
+    print(f"Steering angle range detected: MIN_ANGLE={MIN_ANGLE}, MAX_ANGLE={MAX_ANGLE}")
+    # Normalize steering angles
+    df["steering_angle"] = (df["steering_angle"] - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE)
+    
     return df
 
 def preprocess_image(image_path):
@@ -44,7 +55,7 @@ def preprocess_image(image_path):
         print(f"Image not found or unreadable: {full_path}")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (IMG_WIDTH, IMG_HEIGHT))  # Resize to match input dimensions
-    img = img / 255.0  # Normalize to [0, 1]
+    img = img / 255.0  # Normalize
     return img
  
 def data_generator(df, batch_size):
