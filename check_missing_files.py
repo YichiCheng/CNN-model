@@ -15,6 +15,7 @@ with open(LOG_FILE, 'r') as file:
         # 检查图片文件是否存在
         for frame in [front_frame, left_frame, right_frame]:
             full_path = os.path.join(IMAGE_DIR, frame)
+            print(f"Checking: {full_path}")  
             if not os.path.exists(full_path):
                 missing_files.append(full_path)
 
