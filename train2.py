@@ -143,7 +143,7 @@ def main():
     # Define callbacks
     early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6, verbose=1, min_delta=0.001)
-    tensorboard_callback = TensorBoard(log_dir=f""C:/yichi/AVLtensorboardlog/log1/", histogram_freq=1)
+    tensorboard_callback = TensorBoard(log_dir=f"C:/yichi/AVLtensorboardlog/log1/", histogram_freq=1)
 
     # Train the model
     history = model.fit(
@@ -157,7 +157,7 @@ def main():
     )
     
     # Save the model
-    model.save("steering_model_augmented.keras", save_format="keras")
+    model.save("steering_model_augmented_1.keras", save_format="keras")
     print("Model saved as steering_model_augmented.keras")
 
 if __name__ == "__main__":
