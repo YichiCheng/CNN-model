@@ -75,7 +75,12 @@ def data_generator(df, batch_size):
                 right_images.append(right_image)
                 angles.append(steering_angle)
             
-            yield [np.array(front_images), np.array(left_images), np.array(right_images)], np.array(angles) 
+            yield {
+                "front_input": np.array(front_images),
+                "left_input": np.array(left_images),
+                "right_input": np.array(right_images)
+            }, np.array(angles)
+
 
 # Define CNN model
 def create_model():
