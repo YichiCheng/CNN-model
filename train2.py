@@ -17,10 +17,6 @@ BATCH_SIZE = 32
 EPOCHS = 50
 AUGMENTATION_PROB = 0.5  # Probability of applying augmentations
 
-def denormalize_angle(normalized_angle):
-    """Denormalize angle from [0, 1] to original range."""
-    return normalized_angle * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE
-
 def load_data():
     """
     Load the image file paths and corresponding steering angles from the log file.
