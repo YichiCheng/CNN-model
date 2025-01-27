@@ -155,8 +155,8 @@ def main():
     )
     
     # Save the model
-    model.save("steering_model_augmented.h5")
-    print("Model saved as steering_model_augmented.h5")
+    model.save("steering_model_augmented.keras", save_format="keras")
+    print("Model saved as steering_model_augmented.keras")
 
 if __name__ == "__main__":
     main()
