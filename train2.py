@@ -146,19 +146,18 @@ def main():
     #tensorboard_callback = TensorBoard(log_dir=f"C:/yichi/AVLtensorboardlog/log1/", histogram_freq=1)
 
     with open(log_file_path, "w") as log_file, contextlib.redirect_stdout(log_file):
-    # Train the model
-    history = model.fit(
-        train_gen,
-        steps_per_epoch=len(train_df) // BATCH_SIZE,
-        validation_data=val_gen,
-        validation_steps=len(val_df) // BATCH_SIZE,
-        epochs=EPOCHS,
-        verbose=1,
-        callbacks=[tensorboard_callback, early_stopping, reduce_lr]
-    )
+        history = model.fit(
+            train_gen,
+            steps_per_epoch=len(train_df) // BATCH_SIZE,
+            validation_data=val_gen,
+            validation_steps=len(val_df) // BATCH_SIZE,
+            epochs=EPOCHS,
+            verbose=1,
+            #callbacks=[tensorboard_callback, early_stopping, reduce_lr]
+        )
     
-    # Save the model
-    model.save("steering_model_augmented_1.keras", save_format="keras")
+        model.save("steering_model_augmented_1.keras", save_format="keras")
+        
     print("Model saved as steering_model_augmented.keras")
 
 if __name__ == "__main__":
