@@ -124,7 +124,7 @@ def create_model():
 
     # 归一化层
     attention_output = LayerNormalization()(attention_output)
-    x = Dense(100, activation='relu')(concatenated)
+    x = Dense(100, activation='relu')(attention_output)
     x = Dropout(0.5)(x)
     x = Dense(50, activation='relu')(x)
     x = Dense(10, activation='relu')(x)
