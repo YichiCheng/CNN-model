@@ -117,12 +117,6 @@ def create_model():
     right_branch = cnn_branch(right_input)
     
     concatenated = tf.keras.layers.Concatenate()([front_branch, left_branch, right_branch])
-    
-    # MHA 层
-    #mha_layer = MultiHeadAttention(num_heads=4, key_dim=64)
-    #attention_output = mha_layer(front_branch, left_branch, right_branch)
-    
-    #attention_output = LayerNormalization()(attention_output)
    
     x = Dense(100, activation='relu')(concatenate)
     x = Dropout(0.5)(x)
