@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import cv2
 import tensorflow as tf
+import sys
+import contextlib
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
@@ -12,11 +14,12 @@ from tensorflow.keras.callbacks import TensorBoard
 
 # Constants
 IMAGE_DIR = "C:/image_data/image_data/"
-LOG_FILE = "C:/logging_data/log_file_4.txt"  # Adjust the file index as needed
-IMG_HEIGHT, IMG_WIDTH = 66, 200  # Resize dimensions
+LOG_FILE = "C:/logging_data/log_file_4.txt"  
+log_file_path = "C:/yichi/AVLpplogs/training_log.txt" #training process log
+IMG_HEIGHT, IMG_WIDTH = 66, 200  
 BATCH_SIZE = 32
 EPOCHS = 50
-AUGMENTATION_PROB = 0.5  # Probability of applying augmentations
+AUGMENTATION_PROB = 0.5  
 
 def load_data():
     """
@@ -41,7 +44,6 @@ def load_data():
     print(f"Steering angle range detected: MIN_ANGLE={MIN_ANGLE}, MAX_ANGLE={MAX_ANGLE}")
     # Normalize steering angles
     df["steering_angle"] = (df["steering_angle"] - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE)
-    
     return df
 
 def preprocess_image(image_path):
@@ -125,7 +127,6 @@ def create_model():
     model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae'])
     return model
 
-
 # Main function
 def main():
     # Load and split data
@@ -138,13 +139,13 @@ def main():
     
     # Build the model
     model = create_model()
-    model.summary()
     
     # Define callbacks
     early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6, verbose=1, min_delta=0.001)
-    tensorboard_callback = TensorBoard(log_dir=f"C:/yichi/AVLtensorboardlog/log1/", histogram_freq=1)
+    #tensorboard_callback = TensorBoard(log_dir=f"C:/yichi/AVLtensorboardlog/log1/", histogram_freq=1)
 
+    with open(log_file_path, "w") as log_file, contextlib.redirect_stdout(log_file):
     # Train the model
     history = model.fit(
         train_gen,
