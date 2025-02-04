@@ -116,14 +116,14 @@ def create_model():
     left_branch = cnn_branch(left_input)
     right_branch = cnn_branch(right_input)
     
-    #concatenated = tf.keras.layers.Concatenate()([front_branch, left_branch, right_branch])
+    concatenated = tf.keras.layers.Concatenate()([front_branch, left_branch, right_branch])
     
     # MHA 层：让不同摄像头的特征进行交互
-    mha_layer = MultiHeadAttention(num_heads=4, key_dim=64)
-    attention_output = mha_layer(front_branch, left_branch, right_branch)
-
+    #mha_layer = MultiHeadAttention(num_heads=4, key_dim=64)
+    #attention_output = mha_layer(front_branch, left_branch, right_branch)
     # 归一化层
-    attention_output = LayerNormalization()(attention_output)
+    #attention_output = LayerNormalization()(concatenate)
+   
     x = Dense(100, activation='relu')(attention_output)
     x = Dropout(0.5)(x)
     x = Dense(50, activation='relu')(x)
