@@ -111,7 +111,10 @@ def create_model():
         x = Conv2D(64, (3, 3), activation='relu')(x)
         x = Flatten()(x)
         return x
-
+    front_branch = cnn_branch(front_input)
+    left_branch = cnn_branch(left_input)
+    right_branch = cnn_branch(right_input)
+    
     front_branch = Lambda(lambda x: tf.expand_dims(x, axis=1))(front_branch)
     left_branch = Lambda(lambda x: tf.expand_dims(x, axis=1))(left_branch)
     right_branch = Lambda(lambda x: tf.expand_dims(x, axis=1))(right_branch)
