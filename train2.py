@@ -145,7 +145,7 @@ def main():
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6, verbose=1, min_delta=0.001)
     #tensorboard_callback = TensorBoard(log_dir=f"C:/yichi/AVLtensorboardlog/log1/", histogram_freq=1)
 
-    with open(LOG_FILE_PATH, "w") as log_file, contextlib.redirect_stdout(log_file):
+    with open(LOG_FILE_PATH, "w", encoding="utf-8") as log_file, contextlib.redirect_stdout(log_file):
         history = model.fit(
             train_gen,
             steps_per_epoch=len(train_df) // BATCH_SIZE,
