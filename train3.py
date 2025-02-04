@@ -120,13 +120,14 @@ def create_model():
     
     # MHA 层：让不同摄像头的特征进行交互
     mha_layer = MultiHeadAttention(num_heads=4, key_dim=64)
-    # 计算每个摄像头的注意力权重
-    front_attn = mha_layer(front_branch, front_branch)
-    left_attn = mha_layer(left_branch, left_branch)
-    right_attn = mha_layer(right_branch, right_branch)
+    # 计算不同摄像头之间的注意力
+    front_attn = mha_layer(front_branch, left_branch, right_branch)
+    left_attn = mha_layer(left_branch, front_branch, right_branch)
+    right_attn = mha_layer(right_branch, front_branch, left_branch)
     concatenated = tf.keras.layers.Concatenate()([front_attn, left_attn, right_attn])
-    # 归一化层
+    concatenated = GlobalAveragePooling1D()(concatenated)
     attention_output = LayerNormalization()(concatenated)
+    
     x = Dense(100, activation='relu')(attention_output)
     x = Dropout(0.5)(x)
     x = Dense(50, activation='relu')(x)
