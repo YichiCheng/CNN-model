@@ -152,7 +152,7 @@ def main():
             validation_data=val_gen,
             validation_steps=len(val_df) // BATCH_SIZE,
             epochs=EPOCHS,
-            verbose=1,
+            verbose=2,
             callbacks=[early_stopping, reduce_lr]
         )
     
