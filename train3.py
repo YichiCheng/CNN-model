@@ -116,17 +116,25 @@ def create_model():
     left_branch = cnn_branch(left_input)
     right_branch = cnn_branch(right_input)
     
-    #concatenated = tf.keras.layers.Concatenate()([front_branch, left_branch, right_branch])
-    
+    front_branch = tf.expand_dims(front_branch, axis=1)
+    left_branch = tf.expand_dims(left_branch, axis=1)
+    right_branch = tf.expand_dims(right_branch, axis=1)
+
     # MHA 层：让不同摄像头的特征进行交互
     mha_layer = MultiHeadAttention(num_heads=4, key_dim=64)
+    
     # 计算不同摄像头之间的注意力
-    front_attn = mha_layer(front_branch, left_branch, right_branch)
-    left_attn = mha_layer(left_branch, front_branch, right_branch)
-    right_attn = mha_layer(right_branch, front_branch, left_branch)
-    concatenated = tf.keras.layers.Concatenate()([front_attn, left_attn, right_attn])
-    concatenated = GlobalAveragePooling1D()(concatenated)
-    attention_output = LayerNormalization()(concatenated)
+    attention_output = mha_layer(
+        query=front_branch, 
+        key=tf.concat([front_branch, left_branch, right_branch], axis=1), 
+        value=tf.concat([front_branch, left_branch, right_branch], axis=1)
+    )
+
+    # 归一化层
+    attention_output = LayerNormalization()(attention_output)
+
+    # Flatten 使 MHA 输出适配 Dense 层
+    attention_output = Flatten()(attention_output)
     
     x = Dense(100, activation='relu')(attention_output)
     x = Dropout(0.5)(x)
