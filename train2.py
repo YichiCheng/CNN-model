@@ -63,7 +63,7 @@ def data_generator(df, batch_size):
     """
     num_samples = len(df)
     while True:
-        df = df.sample(frac=1).reset_index(drop=True)  # Shuffle data
+        df = df.sample(frac=1).reset_index(drop=True)  
         for offset in range(0, num_samples, batch_size):
             batch_samples = df[offset:offset + batch_size]
             front_images = []
