@@ -153,7 +153,7 @@ def main():
             validation_steps=len(val_df) // BATCH_SIZE,
             epochs=EPOCHS,
             verbose=1,
-            #callbacks=[tensorboard_callback, early_stopping, reduce_lr]
+            callbacks=[early_stopping, reduce_lr]
         )
     
         model.save("steering_model_augmented_1.keras", save_format="keras")
