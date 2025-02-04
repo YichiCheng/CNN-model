@@ -120,21 +120,13 @@ def create_model():
     left_branch = tf.expand_dims(left_branch, axis=1)
     right_branch = tf.expand_dims(right_branch, axis=1)
 
-    # MHA 层：让不同摄像头的特征进行交互
+    # 让不同摄像头的信息进行交互
+    multi_camera_input = tf.concat([front_branch, left_branch, right_branch], axis=1)
+
     mha_layer = MultiHeadAttention(num_heads=4, key_dim=64)
-    
-    # 计算不同摄像头之间的注意力
-    attention_output = mha_layer(
-        query=front_branch, 
-        key=tf.concat([front_branch, left_branch, right_branch], axis=1), 
-        value=tf.concat([front_branch, left_branch, right_branch], axis=1)
-    )
-
-    # 归一化层
+    attention_output = mha_layer(query=multi_camera_input, key=multi_camera_input, value=multi_camera_input)
     attention_output = LayerNormalization()(attention_output)
-
-    # Flatten 使 MHA 输出适配 Dense 层
-    attention_output = Flatten()(attention_output)
+    attention_output = GlobalAveragePooling1D()(attention_output)
     
     x = Dense(100, activation='relu')(attention_output)
     x = Dropout(0.5)(x)
