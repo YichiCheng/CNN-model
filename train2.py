@@ -118,11 +118,11 @@ def create_model():
     
     concatenated = tf.keras.layers.Concatenate()([front_branch, left_branch, right_branch])
     
-    # MHA 层：让不同摄像头的特征进行交互
+    # MHA 层
     #mha_layer = MultiHeadAttention(num_heads=4, key_dim=64)
     #attention_output = mha_layer(front_branch, left_branch, right_branch)
-    # 归一化层
-    #attention_output = LayerNormalization()(concatenate)
+    
+    #attention_output = LayerNormalization()(attention_output)
    
     x = Dense(100, activation='relu')(concatenate)
     x = Dropout(0.5)(x)
