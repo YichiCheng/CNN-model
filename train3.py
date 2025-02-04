@@ -128,7 +128,7 @@ def create_model():
     x = Dropout(0.5)(x)
     x = Dense(50, activation='relu')(x)
     x = Dense(10, activation='relu')(x)
-    output = Dense(1, name="steering_output")(x)
+    output = Dense(1, activation="linear", name="steering_output")(x)
     
     model = tf.keras.Model(inputs=[front_input, left_input, right_input], outputs=output)
     model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae'])
