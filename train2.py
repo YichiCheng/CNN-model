@@ -15,7 +15,7 @@ from tensorflow.keras.callbacks import TensorBoard
 # Constants
 IMAGE_DIR = "C:/image_data/image_data/"
 LOG_FILE = "C:/logging_data/log_file_4.txt"  
-log_file_path = "C:/yichi/AVLpplogs/training1_log.txt" #training process log
+LOG_FILE_PATH = "C:/yichi/AVLpplogs/training1_log.txt" #training process log
 IMG_HEIGHT, IMG_WIDTH = 66, 200  
 BATCH_SIZE = 32
 EPOCHS = 50
