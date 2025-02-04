@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.layers import MultiHeadAttention, LayerNormalization
-
+from tensorflow.keras.layers import Lambda
 # Constants
 IMAGE_DIR = "C:/image_data/image_data/"
 LOG_FILE = "C:/logging_data/log_file_4.txt"  
@@ -112,13 +112,10 @@ def create_model():
         x = Flatten()(x)
         return x
 
-    front_branch = cnn_branch(front_input)
-    left_branch = cnn_branch(left_input)
-    right_branch = cnn_branch(right_input)
+    front_branch = Lambda(lambda x: tf.expand_dims(x, axis=1))(front_branch)
+    left_branch = Lambda(lambda x: tf.expand_dims(x, axis=1))(left_branch)
+    right_branch = Lambda(lambda x: tf.expand_dims(x, axis=1))(right_branch)
     
-    front_branch = tf.expand_dims(front_branch, axis=1)
-    left_branch = tf.expand_dims(left_branch, axis=1)
-    right_branch = tf.expand_dims(right_branch, axis=1)
 
     # 让不同摄像头的信息进行交互
     multi_camera_input = tf.concat([front_branch, left_branch, right_branch], axis=1)
