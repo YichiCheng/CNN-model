@@ -16,7 +16,7 @@ from tensorflow.keras.layers import MultiHeadAttention, LayerNormalization
 # Constants
 IMAGE_DIR = "C:/image_data/image_data/"
 LOG_FILE = "C:/logging_data/log_file_4.txt"  
-LOG_FILE_PATH = "C:/yichi/AVLpplogs/training2_log.txt" #training process log
+LOG_FILE_PATH = "C:/yichi/AVLpplogs/training3_log.txt" #training process log
 IMG_HEIGHT, IMG_WIDTH = 66, 200  
 BATCH_SIZE = 32
 EPOCHS = 50
@@ -48,14 +48,21 @@ def load_data():
 
 def preprocess_image(image_path):
     full_path = os.path.join(IMAGE_DIR, image_path)
-    #print(f"Reading image from: {full_path}")  
+     
     img = cv2.imread(full_path)
     if img is None:
         print(f"Image not found or unreadable: {full_path}")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (IMG_WIDTH, IMG_HEIGHT))  # Resize to match input dimensions
-    img = img / 255.0  # Normalize
+    
+    original_height, original_width = img.shape[:2]
+    crop_top = 0   
+    crop_bottom = 100  
+    img = img[crop_top:original_height - crop_bottom, :, :]  
+    
+    img = cv2.resize(img, (IMG_WIDTH, IMG_HEIGHT))  
+    img = img / 255.0  
     return img
+
  
 def data_generator(df, batch_size):
     """
@@ -137,7 +144,7 @@ def main():
             callbacks=[early_stopping, reduce_lr]
         )
     
-        model.save("steering_model_augmented_2.keras", save_format="keras")
+        model.save("steering_model_augmented_3.keras", save_format="keras")
         
     print("Model saved as steering_model_augmented.keras")
 
