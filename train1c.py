@@ -33,11 +33,10 @@ def load_data():
             timestamp, left_frame, right_frame, front_frame, steering_angle = parts
             
             front_frame = f"{front_frame}.jpg"
-            left_frame= f"{left_frame}.jpg"
-            right_frame= f"{right_frame}.jpg"
-            data.append((front_frame, left_frame, right_frame, float(steering_angle)))
     
-    df = pd.DataFrame(data, columns=["front_frame", "left_frame", "right_frame", "steering_angle"])
+            data.append((front_frame, float(steering_angle)))
+    
+    df = pd.DataFrame(data, columns=["front_frame", "steering_angle"])
     
     global MIN_ANGLE, MAX_ANGLE  # steering angle normalization
     MIN_ANGLE = df["steering_angle"].min()
@@ -68,31 +67,20 @@ def data_generator(df, batch_size):
         for offset in range(0, num_samples, batch_size):
             batch_samples = df[offset:offset + batch_size]
             front_images = []
-            left_images = []
-            right_images = []
             angles = []
             
             for _, row in batch_samples.iterrows():
                 
                 front_image = preprocess_image(row["front_frame"])
-                left_image = preprocess_image(row["left_frame"])
-                right_image = preprocess_image(row["right_frame"])
-                
+            
                 steering_angle = row["steering_angle"]
                 
                 # Append
                 front_images.append(front_image)
-                left_images.append(left_image)
-                right_images.append(right_image)
+                
                 angles.append(steering_angle)
+            yield np.array(front_images), np.array(angles)
             
-            yield {
-                "front_input": np.array(front_images),
-                "left_input": np.array(left_images),
-                "right_input": np.array(right_images)
-            }, np.array(angles)
-
-
 # Define CNN model
 def create_model():
     """
@@ -100,8 +88,6 @@ def create_model():
     """
     input_shape = (IMG_HEIGHT, IMG_WIDTH, 3)
     front_input = tf.keras.Input(shape=input_shape, name="front_input")
-    left_input = tf.keras.Input(shape=input_shape, name="left_input")
-    right_input = tf.keras.Input(shape=input_shape, name="right_input")
     
     def cnn_branch(input_layer):
         x = Conv2D(24, (5, 5), strides=(2, 2), activation='relu')(input_layer)
@@ -111,12 +97,6 @@ def create_model():
         x = Conv2D(64, (3, 3), activation='relu')(x)
         x = Flatten()(x)
         return x
-
-    front_branch = cnn_branch(front_input)
-    left_branch = cnn_branch(left_input)
-    right_branch = cnn_branch(right_input)
-    
-    concatenated = tf.keras.layers.Concatenate()([front_branch, left_branch, right_branch])
    
     x = Dense(100, activation='relu')(concatenate)
     x = Dropout(0.5)(x)
@@ -124,7 +104,7 @@ def create_model():
     x = Dense(10, activation='relu')(x)
     output = Dense(1, name="steering_output")(x)
     
-    model = tf.keras.Model(inputs=[front_input, left_input, right_input], outputs=output)
+    model = tf.keras.Model(inputs=front_input, outputs=output)
     model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae'])
     return model
 
