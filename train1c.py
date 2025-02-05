@@ -97,7 +97,7 @@ def create_model():
         x = Conv2D(64, (3, 3), activation='relu')(x)
         x = Flatten()(x)
         return x
-   
+    x = cnn_branch(front_input)
     x = Dense(100, activation='relu')(x)
     x = Dropout(0.5)(x)
     x = Dense(50, activation='relu')(x)
