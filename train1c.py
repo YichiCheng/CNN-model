@@ -52,7 +52,7 @@ def preprocess_image(image_path):
     img = cv2.imread(full_path)
     if img is None:
         print(f"Image not found or unreadable: {full_path}")
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)img = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
     
     original_height, original_width = img.shape[:2]
     crop_top = 0   
