@@ -16,7 +16,7 @@ from tensorflow.keras.layers import MultiHeadAttention, LayerNormalization
 # Constants
 IMAGE_DIR = "C:/image_data/image_data/"
 LOG_FILE = "C:/logging_data/log_file_4.txt"  
-LOG_FILE_PATH = "C:/yichi/AVLpplogs/training4_log.txt" #training process log
+LOG_FILE_PATH = "C:/yichi/AVLpplogs/training5_log.txt" #training process log
 IMG_HEIGHT, IMG_WIDTH = 66, 200  
 BATCH_SIZE = 32
 EPOCHS = 50
@@ -144,7 +144,7 @@ def main():
             callbacks=[early_stopping, reduce_lr, tensorboard_callback]
         )
     
-        model.save("steering_model_augmented_4.keras", save_format="keras")
+        model.save("steering_model_augmented_5.keras", save_format="keras")
         
     print("Model saved as steering_model_augmented.keras")
 
