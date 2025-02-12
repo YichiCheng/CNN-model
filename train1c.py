@@ -129,7 +129,7 @@ def main():
     model = create_model()
     
     # Define callbacks
-    #early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6, verbose=1, min_delta=0.001)
     tensorboard_callback = TensorBoard(log_dir=f"C:/yichi/AVLtensorboardlog/log2/", histogram_freq=1)
 
@@ -141,7 +141,7 @@ def main():
             validation_steps=len(val_df) // BATCH_SIZE,
             epochs=EPOCHS,
             verbose=2,
-            callbacks=[reduce_lr, tensorboard_callback]
+            callbacks=[early_stopping, reduce_lr, tensorboard_callback]
         )
     
         model.save("steering_model_augmented_5.keras", save_format="keras")
