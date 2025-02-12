@@ -112,7 +112,7 @@ def create_model():
     output = Dense(1, name="steering_output")(x)
     
     model = tf.keras.Model(inputs=front_input, outputs=output)
-    model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae'])
+    model.compile(optimizer=Adam(learning_rate=0.00005), loss='mse', metrics=['mae'])
     return model
 
 # Main function
